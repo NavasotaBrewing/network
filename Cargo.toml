@@ -1,8 +1,13 @@
 [package]
-name = "network"
+name = "bcs_network"
 version = "0.1.0"
 authors = ["llamicron <llamicron@gmail.com>"]
 edition = "2018"
+description = "Brewery Control System networking crate for Navasota Brewing Company"
+homepage      = "https://github.com/NavasotaBrewing/network"
+repository    = "https://github.com/NavasotaBrewing/network"
+documentation = "https://github.com/NavasotaBrewing/network"
+license = "MIT"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
