@@ -14,27 +14,30 @@ use rocket_cors::{self, AllowedHeaders, AllowedOrigins};
 use reqwest;
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
 
-use crate::configuration::Configuration;
+use crate::model::Model;
 
-// Send given configuration to RTU at given address and returns the updated configuration
-fn update(current_config: &Configuration, addr: SocketAddrV4) -> Configuration {
+// Send given model to RTU at given address and returns the updated model.
+// This will be called for each RTU.
+fn update(current_model: &Model, addr: SocketAddrV4) -> Model {
     let client = reqwest::Client::new();
     let mut body = client
-        .post(&format!("http://{}/configuration", addr))
-        .body(current_config.stringify())
+        .post(&format!("http://{}/model", addr))
+        // .body(current_model.stringify())
+        .body(serde_json::to_string(current_model).expect("Couldn't deserialize model"))
         .header(CONTENT_TYPE, HeaderValue::from_static("application/json"))
         .send()
         .expect("Something went wrong, could not post to RTU");
 
-    // ...and update current_config with whatever is returned
-    let err_msg = format!("Could not get configuration back from RTU with address {}", addr);
+    // ...and update current_model with whatever is returned
+    let err_msg = format!("Could not get model back from RTU with address {}", addr);
     // Do NOT read body.json() or body.text() before this line, it only works once because crackheads i guess
-    Configuration::from(&body.text().unwrap()).expect(&err_msg)
+    // Note: future luke (mildly smarter) knows that calling .text() consumes the body
+    serde_json::from_str(&body.text().unwrap()).expect(&err_msg)
 }
 
 #[get("/")]
 fn index() -> &'static str {
-    "Master API, you shouldn't see this"
+    "BCS Networking Master API, you shouldn't see this"
 }
 
 #[get("/running")]
@@ -43,15 +46,16 @@ fn running() -> &'static str {
 }
 
 /// This is the main endpoint for the client site, it POSTs here
-/// and this propogates to all the RTUs in the configuration
-#[post("/configuration", format = "json", data = "<config>")]
-fn propogate_to_RTUs(config: Json<Configuration>) -> String {
-    let mut current_config = config.clone();
-    let addrs = current_config.RTUs.iter().map(|rtu| rtu.ipv4 ).collect::<Vec<SocketAddrV4>>();
+/// and this propogates to all the RTUs in the model
+#[post("/model", format = "json", data = "<model>")]
+fn propogate_to_RTUs(model: Json<Model>) -> String {
+    let mut current_model = model.clone();
+    let addrs = current_model.RTUs.iter().map(|rtu| rtu.ipv4 ).collect::<Vec<SocketAddrV4>>();
     for addr in addrs {
-        current_config = update(&current_config, addr);
+        // update the model according to the RTU at that address
+        current_model = update(&current_model, addr);
     }
-    current_config.stringify()
+    serde_json::to_string(&current_model).expect("Couldn't serialize model")
 }
 
 pub fn run() {

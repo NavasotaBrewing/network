@@ -10,11 +10,11 @@ use rocket::http::Method;
 use rocket::{get, routes};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
-use crate::configuration::Configuration;
+use crate::model::Model;
 
 #[get("/")]
 fn index() -> &'static str {
-    "RTU API, you shouldn't see this"
+    "BCS Networking RTU API, you definitely shouldn't see this"
 }
 
 #[get("/running")]
@@ -22,14 +22,14 @@ fn running() -> &'static str {
     r#"{"running":"true"}"#
 }
 
-#[post("/configuration", format = "json", data = "<config>")]
-fn update_config(config: Json<Configuration>) -> String {
-    // Receive a config, consume the Json wrapper, as one does
-    let config = config.into_inner();
-    // Update the config
-    let updated_config = Configuration::update(&config, &config.mode);
+#[post("/model", format = "json", data = "<model>")]
+fn update_model(model: Json<Model>) -> String {
+    // Receive a model, consume the Json wrapper, as one does
+    let model = model.into_inner();
+    // Update the model
+    let updated_model = Model::update(&model, &model.mode);
     // Return to sender
-    updated_config.stringify()
+    serde_json::to_string(&updated_model).expect("Couldn't serialize model")
 }
 
 pub fn run() {
@@ -53,7 +53,7 @@ pub fn run() {
     .to_cors().unwrap();
 
 
-    let routes = routes![index, update_config, running];
+    let routes = routes![index, update_model, running];
     app
         .mount("/", routes)
         .attach(cors)

@@ -18,6 +18,11 @@ use serde::{Serialize, Deserialize};
 
 mod device;
 mod rtu;
+mod model;
+
+pub use device::Device;
+pub use rtu::RTU;
+pub use model::Model;
 
 /// RTUs store their ID in `/rtu_id`. This function reads that ID.
 pub fn get_rtu_id() -> String {
