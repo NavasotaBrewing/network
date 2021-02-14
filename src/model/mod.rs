@@ -45,6 +45,19 @@ impl Default for State {
     fn default() -> Self { State::Off }
 }
 
+#[cfg(features = "rtu")]
+impl State {
+    pub fn from_BState(bstate: brewdrivers::RTU::relays::State) -> Self {
+        use brewdrivers::RTU::relays::State as BState;
+
+        match bstate {
+            BState::On => return Self::On,
+            BState::Off => return Self::Off,
+            _ => return Self::default()
+        }
+    }
+}
+
 
 /// When a model is being passed back and forth from `brewkit` to here, it
 /// can have one of two modes: Read or Write. If the mode is Write, then this crate

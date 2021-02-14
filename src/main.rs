@@ -20,13 +20,23 @@ fn help() {
     println!("rtu:     Starts the RTU API");
 }
 
+
+
 fn main() {
+    if cfg!(features = "rtu") {
+        println!("RTU Mode Enabled");
+    } else {
+        println!("RTU Mode Disabled. No hardware interaction will be made");
+    }
+
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 1 {
         help();
         exit(0);
     }
+
+    
 
     match args[1].as_str() {
         "master" => crate::api::master::run(),
