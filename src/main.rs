@@ -12,7 +12,6 @@ extern crate rocket_cors;
 extern crate reqwest;
 
 mod api;
-mod configuration;
 mod model;
 
 fn help() {
