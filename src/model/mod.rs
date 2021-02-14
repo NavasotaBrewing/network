@@ -17,6 +17,7 @@ use std::fs;
 use serde::{Serialize, Deserialize};
 
 mod device;
+mod rtu;
 
 /// RTUs store their ID in `/rtu_id`. This function reads that ID.
 pub fn get_rtu_id() -> String {
