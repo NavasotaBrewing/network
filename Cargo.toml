@@ -1,6 +1,6 @@
 [package]
 name = "bcs_network"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["llamicron <llamicron@gmail.com>"]
 edition = "2018"
 description = "Brewery Control System networking crate for Navasota Brewing Company"
@@ -18,7 +18,7 @@ reqwest = "0.9.20"
 # brewdrivers = "*"
 
 [dependencies.brewdrivers]
-version = "0.5.1"
+version = "0.6.0"
 features = ["network"]
 # default-features = false
 optional = true

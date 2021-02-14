@@ -29,13 +29,13 @@ impl Device {
     /// are added. I'd like to extract this to a trait within `brewdrivers` so
     /// I don't have to expand this when I write a new driver.
     pub fn update(device: &mut Device, mode: &Mode) {
-        use brewdrivers::RTU::{
+        use brewdrivers::{
             omega::CN7500,
             relays::{STR1, Board}
         };
         // This is a little bit fucked. I'm maintaining two different states becauese
         // it'll save time and space later.
-        use brewdrivers::RTU::relays::State as BState;
+        use brewdrivers::relays::State as BState;
         
         match device.driver {
             Driver::STR1 => {
