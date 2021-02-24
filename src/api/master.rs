@@ -28,6 +28,11 @@ fn update(current_model: &Model, addr: SocketAddrV4) -> Model {
 pub async fn run() {
     let running = warp::path("running").map(|| r#"{"running":"true"}"# );
     
+    let config_dep = warp::path("configuration")
+        .map(|| {
+            "deprecated"
+        });
+
     let handle_model = warp::path("model")
         .and(warp::body::json())
         .map(|model: Model| {
@@ -46,7 +51,10 @@ pub async fn run() {
             serde_json::to_string(&current_model).expect("Couldn't serialize model")
         });
 
-    let routes = running.or(handle_model);
+    let routes = running
+        .or(config_dep)
+        .or(handle_model);
+
         warp::serve(routes)
             .run(([0, 0, 0, 0], 8000))
             .await;
