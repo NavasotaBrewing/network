@@ -12,23 +12,21 @@ license = "MIT"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-rocket = "0.4.2"
-rocket_cors = "0.5.0"
-reqwest = "0.9.20"
-# brewdrivers = "*"
+reqwest = "0.11"
+# We need these older version for tokio 0.2 compatibility with brewdrivers
+warp = "0.2.5"
+tokio = { version = "0.2", features = ["full"] }
 
 [dependencies.brewdrivers]
-version = "0.6.0"
+version = "0.8.0"
 features = ["network"]
 # default-features = false
-optional = true
+# Change this back to true when release
+optional = false
 
-[dependencies.rocket_contrib]
-version = "0.4.2"
-default-features = false
-features = ["json"]
-
+[dev-dependencies]
+serial_test = "*"
 
 [features]
 default = []
-rtu = ["brewdrivers"]
+# rtu = ["brewdrivers"]

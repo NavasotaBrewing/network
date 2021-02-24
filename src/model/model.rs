@@ -18,15 +18,16 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn update(source_model: &Self, mode: &Mode) -> Self {
+    pub async fn update(source_model: &Self, mode: &Mode) -> Self {
         
         let mut model = source_model.clone();
 
+        // TODO: find() instead of iterating like a dumbass
         for mut rtu in &mut model.RTUs {
             // This is called on the RTU.
             // Only update this RTU.
             if rtu.id == get_rtu_id() {
-            	RTU::update(&mut rtu, &mode);
+            	RTU::update(&mut rtu, &mode).await;
             }
         }
         model

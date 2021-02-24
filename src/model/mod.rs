@@ -70,7 +70,7 @@ pub enum Driver {
     /// The driver is the same either way.
     STR1,
     /// An OMEGA Engineering PID. We use the CN7500, and haven't yet tested on others.
-    // TODO: This might need to be renamed CN7500 to be more specific.
+    // TODO: This needs to be renamed CN7500 to be more specific.
     Omega,
 }
 

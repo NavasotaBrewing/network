@@ -18,9 +18,9 @@ pub struct RTU {
 
 impl RTU {
     /// This calls update on each device contained in it 
-    pub fn update(rtu: &mut RTU, mode: &Mode) {
+    pub async fn update(rtu: &mut RTU, mode: &Mode) {
         for mut device in &mut rtu.devices {
-            Device::update(&mut device, &mode);
+            Device::update(&mut device, &mode).await;
         }
     }
 }

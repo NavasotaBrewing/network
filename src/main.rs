@@ -3,13 +3,6 @@
 use std::env;
 use std::process::exit;
 
-extern crate serde;
-extern crate serde_json;
-#[macro_use]
-extern crate rocket;
-extern crate rocket_contrib;
-extern crate rocket_cors;
-extern crate reqwest;
 
 mod api;
 mod model;
@@ -22,7 +15,8 @@ fn help() {
 
 
 
-fn main() {
+#[tokio::main]
+async fn main() {
     if cfg!(features = "rtu") {
         println!("RTU Mode Enabled");
     } else {
@@ -39,12 +33,12 @@ fn main() {
     
 
     match args[1].as_str() {
-        "master" => crate::api::master::run(),
-        "rtu" => crate::api::RTU::run(),
+        // "master" => crate::api::master::run(),
+        "rtu" => crate::api::RTU::run().await,
         _ => {
             eprintln!("Arg '{}' not known.", args[1].as_str());
             help();
             exit(1);
         }
-    }
+    };
 }
