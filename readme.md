@@ -28,3 +28,9 @@ $ bcs_network rtu
 ```
 
 Cargo should handle everything for you.
+
+## Specifying the Serial Port
+The default serial port is `/dev/ttyAMA0`. If this is incorrect, set the environment variable `BREWDRIVERS_PORT`
+```
+$ BREWDRIVERS_PORT=/dev/ttyUSB0 bcs_network rtu
+```
