@@ -24,7 +24,7 @@ features = ["network"]
 optional = true
 
 [dev-dependencies]
-serial_test = "*"
+serial_test = "0.5.1"
 
 [features]
 default = []
