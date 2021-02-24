@@ -20,7 +20,7 @@ pub struct Device {
 }
 
 
-// #[cfg(feature = "rtu")]
+#[cfg(feature = "rtu")]
 impl Device {
     /// Updates either the device state or the Model state, 
     /// depending on the Mode.
@@ -90,18 +90,19 @@ impl Device {
     }
 }
 
-// /// If you're not on an RTU (ie. there's no hardware to interact with),
-// /// then this function does nothing. Enabling the "rtu" feature will enable
-// /// the real update() function.
-// #[cfg(not(feature = "rtu"))]
-// impl Device {
-//     pub async fn update(_: &mut Device, _: &Mode) {
-//         println!("RTU feature hasn't been enabled, update() does nothing.");
-//     }
-// }
+/// If you're not on an RTU (ie. there's no hardware to interact with),
+/// then this function does nothing. Enabling the "rtu" feature will enable
+/// the real update() function.
+#[cfg(not(feature = "rtu"))]
+impl Device {
+    pub async fn update(_: &mut Device, _: &Mode) {
+        println!("RTU feature hasn't been enabled, update() does nothing.");
+    }
+}
 
 
 
+#[cfg(feature = "rtu")]
 #[cfg(test)]
 mod tests {
     use super::*;

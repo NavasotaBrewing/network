@@ -17,7 +17,7 @@ fn help() {
 
 #[tokio::main]
 async fn main() {
-    if cfg!(features = "rtu") {
+    if cfg!(feature = "rtu") {
         println!("RTU Mode Enabled");
     } else {
         println!("RTU Mode Disabled. No hardware interaction will be made");
@@ -33,7 +33,7 @@ async fn main() {
     
 
     match args[1].as_str() {
-        // "master" => crate::api::master::run(),
+        "master" => crate::api::master::run().await,
         "rtu" => crate::api::RTU::run().await,
         _ => {
             eprintln!("Arg '{}' not known.", args[1].as_str());

@@ -12,7 +12,7 @@ license = "MIT"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-reqwest = "0.11"
+reqwest = { version = "0.11", features = ["blocking"] }
 # We need these older version for tokio 0.2 compatibility with brewdrivers
 warp = "0.2.5"
 tokio = { version = "0.2", features = ["full"] }
@@ -21,12 +21,11 @@ tokio = { version = "0.2", features = ["full"] }
 version = "0.8.0"
 features = ["network"]
 # default-features = false
-# Change this back to true when release
-optional = false
+optional = true
 
 [dev-dependencies]
 serial_test = "*"
 
 [features]
 default = []
-# rtu = ["brewdrivers"]
+rtu = ["brewdrivers"]
