@@ -26,17 +26,33 @@ fn update(current_model: &Model, addr: SocketAddrV4) -> Model {
 }
 
 pub async fn run() {
-    let running = warp::path("running").map(|| r#"{"running":"true"}"# );
+    let cors = warp::cors()
+        .allow_any_origin()
+        .allow_headers(
+            vec![
+                "Content-Type",
+                "User-Agent",
+                "Sec-Fetch-Mode",
+                "Referer",
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+            ]
+        )
+        .allow_methods(vec!["GET", "POST"]);
+
+    let running = warp::path("running").map(|| r#"{"running":"true"}"# ).with(&cors);
     
     let config_dep = warp::path("configuration")
         .map(|| {
             "deprecated"
-        });
+        })
+        .with(&cors);
 
     let handle_model = warp::path("model")
         .and(warp::body::json())
         .map(|model: Model| {
-            println!("Master API recieved a model, about to send it to the RTUs");
+            // println!("Master API recieved a model, about to send it to the RTUs");
             let addrs: Vec<SocketAddrV4> = model
                 .RTUs
                 .iter()
@@ -49,7 +65,8 @@ pub async fn run() {
             }
             
             serde_json::to_string(&current_model).expect("Couldn't serialize model")
-        });
+        })
+        .with(&cors);
 
     let routes = running
         .or(config_dep)
