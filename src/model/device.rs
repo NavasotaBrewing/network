@@ -1,6 +1,8 @@
 //! This is the lowest level of a Model. It represents one discrete device
 //! in the BCS. Every device has some state and a driver, corresponding to a
 //! device driver in `brewdrivers`.
+//! 
+//! This is among some of the worst code I've written.
 
 use serde::{Serialize, Deserialize};
 
@@ -32,7 +34,8 @@ impl Device {
         let serial_port = std::env::var("BREWDRIVERS_PORT").unwrap_or("/dev/ttyAMA0".to_owned());
         use brewdrivers::{
             omega::CN7500,
-            relays::STR1
+            relays::STR1,
+            relays::Waveshare
         };
         // This is a little bit fucked. I'm maintaining two different states becauese
         // it'll save time and space later.
@@ -42,25 +45,46 @@ impl Device {
             Driver::STR1 => {
                 // TODO: make an override for the port with an environment variable or file or something
                 // We want to panic! here. This will be run by rocket, so if it panics it will just fail with a message
-                let mut board = STR1::new(device.controller_addr, &serial_port, 9600).expect("Couldn't connect to STR1!");
+                let mut board = STR1::connect(device.controller_addr, &serial_port).expect("Couldn't connect to STR1!");
                 match mode {
                     Mode::Write => {
                         let new_state = match device.state {
                             State::On => BState::On,
                             State::Off => BState::Off
                         };
-                        board.set_relay(device.addr, new_state);
+                        // why not board.set_relay(..., device.state)?? I'm confused
+                        board.set_relay(device.addr, new_state).expect("Couldn't set relay");
                     },
                     Mode::Read => {
                         // Don't do anything here, we always read new state
                     }
                 }
                 // Read|Update
-                device.state = match board.get_relay(device.addr) {
+                // TODO: handle the result here
+                device.state = match board.get_relay(device.addr).unwrap() {
                     BState::On => State::On,
                     BState::Off => State::Off
                 }
             },
+            Driver::Waveshare => {
+                let mut board = Waveshare::connect(device.controller_addr, &serial_port).expect("Couldn't connect to the Waveshare board!");
+                match mode {
+                    Mode::Write => {
+                        let new_state = match device.state {
+                            State::On => BState::On,
+                            State::Off => BState::Off
+                        };
+                        board.set_relay(device.addr, new_state).expect("Couldn't set relay");
+
+                    },
+                    Mode::Read => {}
+                }
+
+                device.state = match board.get_relay(device.addr).unwrap() {
+                    BState::On => State::On,
+                    BState::Off => State::Off
+                }
+            }
             Driver::Omega => {
                 let mut cn7500 = CN7500::new(device.controller_addr, &serial_port, 19200).await.expect("Couldn't connect to CN7500!");
                 match mode {

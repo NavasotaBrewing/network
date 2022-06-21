@@ -72,6 +72,8 @@ pub enum Driver {
     /// An OMEGA Engineering PID. We use the CN7500, and haven't yet tested on others.
     // TODO: This needs to be renamed CN7500 to be more specific.
     Omega,
+    // The Waveshare relay board, similar in usage to the STR1
+    Waveshare
 }
 
 
@@ -108,6 +110,7 @@ mod tests {
         // These are also case sensitive, take my word for it.
         assert_eq!(serde_json::to_string(&Driver::STR1).unwrap(), "\"STR1\"");
         assert_eq!(serde_json::to_string(&Driver::Omega).unwrap(), "\"Omega\"");
+        assert_eq!(serde_json::to_string(&Driver::Waveshare).unwrap(), "\"Waveshare\"");
     }
 
 
