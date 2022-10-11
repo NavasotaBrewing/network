@@ -33,3 +33,34 @@ impl Model {
         model
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn testing_model() -> Model {
+        Model {
+            name: String::from("Testing Model"),
+            description: Some(String::from("description")),
+            slackChannel: Some(String::from("@luke")),
+            slackWebhook: Some(String::from("webhook.goes.here")),
+            masterAddr: Some(String::from("192.168.0.1")),
+            date: Some(String::from("2022/10/10")),
+            mode: Mode::Read,
+            id: 1,
+            RTUs: vec![],
+        }
+    }
+
+    #[test]
+    fn test_to_json() {
+        let model: Model = testing_model();
+        let res = serde_json::to_string(&model);
+        assert!(res.is_ok());
+
+        let expected = r#"{"name":"Testing Model","description":"description","slackChannel":"@luke","slackWebhook":"webhook.goes.here","masterAddr":"192.168.0.1","date":"2022/10/10","mode":"Read","id":1,"RTUs":[]}"#;
+        assert_eq!(res.unwrap(), expected);
+    }
+
+}

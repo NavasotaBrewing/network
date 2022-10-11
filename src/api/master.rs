@@ -1,5 +1,5 @@
 use std::net::SocketAddrV4;
-use reqwest::header::{HeaderValue, CONTENT_TYPE};
+use reqwest::{header::{HeaderValue, CONTENT_TYPE}, Method};
 use warp::Filter;
 use crate::model::Model;
 
@@ -26,20 +26,37 @@ fn update(current_model: &Model, addr: SocketAddrV4) -> Model {
 }
 
 pub async fn run() {
+    // let cors = warp::cors()
+    //     .allow_any_origin()
+    //     .allow_header("content-type")
+    //     .allow_headers(vec![
+    //         "Access-Control-Allow-Origin"
+    //     ])
+    //     // .allow_headers(
+    //     //     vec![
+    //     //         "Accept",
+    //     //         "Accept-Encoding",
+    //     //         "Accept-Language",
+    //     //         "Connection",
+    //     //         "Content-Length",
+    //     //         "Host",
+    //     //         "Sec-Fetch-Dest",
+    //     //         "Sec-Fetch-Site",
+    //     //         "content-type",
+    //     //         "User-Agent",
+    //     //         "Sec-Fetch-Mode",
+    //     //         "Referer",
+    //     //         "Origin",
+    //     //         "Access-Control-Request-Method",
+    //     //         "Access-Control-Request-Headers",
+    //     //         "Access-Control-Allow-Origin",
+    //     //     ]
+    //     // )
+    //     .allow_methods(vec!["GET", "POST"]);
     let cors = warp::cors()
         .allow_any_origin()
-        .allow_headers(
-            vec![
-                "Content-Type",
-                "User-Agent",
-                "Sec-Fetch-Mode",
-                "Referer",
-                "Origin",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
-            ]
-        )
-        .allow_methods(vec!["GET", "POST"]);
+        .allow_methods(&[Method::POST])
+        .allow_header("content-type");
 
     let running = warp::path("running").map(|| r#"{"running":"true"}"# ).with(&cors);
     
