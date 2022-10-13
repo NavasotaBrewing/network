@@ -1,3 +1,7 @@
+# Deprecated 
+
+WARNING: this is being deprecated in favor of NavasotaBrewing/iris.
+
 # BCS network
 This crate contains all the necessary networking components for the Brewery Control System to operate.
 

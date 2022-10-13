@@ -1,17 +1,3 @@
-//! This module is replacing what is currently known as Configuration
-//!
-//! The `Model` struct is a model of the physical layout of the BCS. It contains some metadata,
-//! a list of RTUs, and a list of Devices for each RTU. It is designed to be passed back and
-//! forth between `brewkit` (VueJS front end) and this crate, the networking crate.
-//!
-//! This module is responsible for accepting the Model and calling `brewdrivers` to make the
-//! necessary device state changes. It's really important.
-//!
-
-
-// The main bits are rtu.rs, device.rs, and model.rs. In this file are just helpers and general
-// structs that don't fit anywhere else
-
 use std::fs;
 
 use serde::{Serialize, Deserialize};
